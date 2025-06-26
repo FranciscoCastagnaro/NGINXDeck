@@ -7,7 +7,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
-    e.preventDefault(); // evita que recargue la page
+    e.preventDefault();
     if (email && password) {
       navigate("/home");
     }

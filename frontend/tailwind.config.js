@@ -4,16 +4,18 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class',
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        primary: '#0f172a',
-        secondary: '#1e293b',
-        accent: '#2563eb',
+        primary: "#0a0f1c",      // Fondo principal (muy oscuro, casi negro con azul)
+        secondary: "#121826",    // Contenedores / tarjetas
+        accent: "#1e40af",       // Azul marino acento (botones, tabs activos)
+        muted: "#1f2937",        // Grises oscuros para bordes o separadores
+        textPrimary: "#ffffff",
+        textSecondary: "#9ca3af", // Gris claro para textos secundarios
       },
     },
   },
   plugins: [],
-}
-;
+};

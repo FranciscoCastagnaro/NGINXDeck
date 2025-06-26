@@ -1,95 +1,101 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from "framer-motion";
+import ApiKeyManager from "@/components/ApiKeyManager";
+import NGINXEditor from "@/components/NGINXEditor";
+
+const tabs = [
+  { id: "nginx", label: "NGINX Editor" },
+  { id: "api", label: "API Keys" },
+];
 
 export default function Home() {
-  const [apiKeys, setApiKeys] = useState([
-    { id: 1, name: "Production API", key: "xyz-1234" },
-    { id: 2, name: "Test API", key: "abc-5678" },
-  ]);
+  const [activeTab, setActiveTab] = useState("nginx");
+  const [tabRects, setTabRects] = useState({});
+  const tabRefs = useRef({});
+  const tabContainerRef = useRef();
 
-  const [newName, setNewName] = useState("");
-  const [newKey, setNewKey] = useState("");
-
-  const addKey = () => {
-    if (newName && newKey) {
-      const newEntry = {
-        id: Date.now(),
-        name: newName,
-        key: newKey,
-      };
-      setApiKeys([newEntry, ...apiKeys]);
-      setNewName("");
-      setNewKey("");
+  useEffect(() => {
+    const newRects = {};
+    for (const tab of tabs) {
+      const el = tabRefs.current[tab.id];
+      if (el) {
+        newRects[tab.id] = el.getBoundingClientRect();
+      }
     }
-  };
-
-  const deleteKey = (id) => {
-    setApiKeys(apiKeys.filter((k) => k.id !== id));
-  };
+    setTabRects(newRects);
+  }, [activeTab]);
 
   return (
-    <div className="min-h-screen bg-primary text-white px-4 py-10">
-      <div className="max-w-5xl mx-auto bg-secondary p-8 rounded-xl shadow-lg">
-        <h1 className="text-3xl font-semibold mb-6">Your API Keys</h1>
-
-        {/* Add Key Form */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <input
-            type="text"
-            placeholder="Key Name"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            className="flex-1 px-4 py-2 rounded-lg bg-primary border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent"
-          />
-          <input
-            type="text"
-            placeholder="API Key"
-            value={newKey}
-            onChange={(e) => setNewKey(e.target.value)}
-            className="flex-1 px-4 py-2 rounded-lg bg-primary border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent"
-          />
-          <button
-            onClick={addKey}
-            className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Add API Key
-          </button>
+    <div className="min-h-screen bg-primary text-textPrimary p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-accent tracking-tight">
+            NGINXDeck
+          </h1>
+          <p className="text-sm text-textSecondary">
+            Your visual NGINX configuration option
+          </p>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full border border-gray-700 rounded-lg overflow-hidden">
-            <thead className="bg-primary border-b border-gray-700">
-              <tr>
-                <th className="p-3 text-left">Name</th>
-                <th className="p-3 text-left">Key</th>
-                <th className="p-3 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {apiKeys.map((k) => (
-                <tr key={k.id} className="border-t border-gray-700 hover:bg-gray-800">
-                  <td className="p-3">{k.name}</td>
-                  <td className="p-3 font-mono text-sm text-gray-300">{k.key}</td>
-                  <td className="p-3 text-center">
-                    <button
-                      onClick={() => deleteKey(k.id)}
-                      className="text-red-500 hover:text-red-700 transition"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {apiKeys.length === 0 && (
-                <tr>
-                  <td colSpan="3" className="p-3 text-center text-gray-500">
-                    No API keys available.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        <div
+          ref={tabContainerRef}
+          className="relative flex gap-6 border-b border-muted mb-6"
+        >
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              ref={(el) => (tabRefs.current[tab.id] = el)}
+              onClick={() => setActiveTab(tab.id)}
+              className={`pb-2 relative text-sm transition-colors duration-300 ${
+                activeTab === tab.id ? "text-accent" : "text-textSecondary"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+
+          {tabRects[activeTab] && (
+            <motion.div
+              layoutId="tab-underline"
+              className="absolute bottom-0 h-[2px] bg-accent rounded"
+              initial={false}
+              animate={{
+                left:
+                  tabRects[activeTab].left -
+                  tabContainerRef.current.getBoundingClientRect().left,
+                width: tabRects[activeTab].width,
+              }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />
+          )}
         </div>
+
+        <AnimatePresence mode="wait">
+          {activeTab === "nginx" && (
+            <motion.div
+              key="nginx"
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <NGINXEditor />
+            </motion.div>
+          )}
+
+          {activeTab === "api" && (
+            <motion.div
+              key="api"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ApiKeyManager />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
