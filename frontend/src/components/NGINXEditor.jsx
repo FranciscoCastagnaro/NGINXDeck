@@ -48,7 +48,6 @@ export default function NGINXEditor() {
     <div className="bg-secondary p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">NGINX Visual Config Editor</h2>
 
-      {/* Inputs */}
       <div className="grid md:grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block text-sm mb-1">Server Name</label>
