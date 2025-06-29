@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer"
 
 // Api Key CRUD page
 export default function ApiKeyManager() {
@@ -106,6 +107,7 @@ export default function ApiKeyManager() {
             </div>
           </motion.div>
         </AnimatePresence>
+        <Footer />
       </div>
     </div>
   );

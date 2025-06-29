@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import NGINXEditor from "@/components/NGINXEditor";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
             <NGINXEditor />
           </motion.div>
         </AnimatePresence>
+        <Footer />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ export default function Header() {
   const navItems = [
     { name: "Home", icon: <Home className="w-4 h-4" />, to: "/" },
     { name: "API Keys", icon: <KeyRound className="w-4 h-4" />, to: "/key-manager" },
-    { name: "Login", icon: <LogIn className="w-4 h-4" />, to: "/login" }
+    { name: "Sign in", icon: <LogIn className="w-4 h-4" />, to: "/login" }
   ];
 
   return (
