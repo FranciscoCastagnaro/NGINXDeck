@@ -1,22 +1,37 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (email && password) {
-      navigate("/home");
+    setError("");
+
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (err) {
+      setError(err.message);
     }
-  }; 
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-primary text-white">
       <div className="bg-secondary rounded-xl shadow-xl p-8 w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center mb-6">Sign in to your account</h2>
+
+        {error && (
+          <div className="text-red-400 text-sm text-center mb-4">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
             <label className="block text-sm mb-1">Email</label>
