@@ -13,7 +13,7 @@ exports.register = async (req, res) => {
       res.status(201).json({ id, name, email });
     });
   } catch (err) {
-    res.status(500).json({ error: "Error del servidor" });
+    res.status(500).json({ error: "Server error, contact support" });
   }
 };
 
@@ -21,10 +21,9 @@ exports.login = (req, res) => {
   const { email, password } = req.body;
   userModel.getByEmail(email, async (err, user) => {
     if (err || !user)
-      return res.status(400).json({ error: "Credenciales inválidas" });
+      return res.status(400).json({ error: "Invalid credentials" });
     const match = await bcrypt.compare(password, user.password);
-    if (!match)
-      return res.status(400).json({ error: "Credenciales inválidas" });
+    if (!match) return res.status(400).json({ error: "Invalid credentials" });
     const token = jwt.sign({ id: user.id, name: user.name }, SECRET, {
       expiresIn: "1h",
     });
@@ -40,4 +39,9 @@ exports.login = (req, res) => {
 
 exports.me = (req, res) => {
   res.json({ user: req.user.name });
+};
+
+exports.logout = (req, res) => {
+  res.clearCookie("token");
+  res.json({ msg: "Logged out succesfully" });
 };
